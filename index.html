@@ -1,0 +1,632 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Confirmaciones | Primera Comunión de Anthony</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #173654;
+      --gold: #c89c43;
+      --ink: #3b4d5d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 30px 18px;
+      color: var(--ink);
+      font-family: Montserrat, Arial, sans-serif;
+
+      background:
+        radial-gradient(circle at 10% 14%, rgba(176,212,225,.6), transparent 28%),
+        linear-gradient(140deg, #fdfcf4, #e4f0f2);
+    }
+
+    main {
+      width: min(100%, 720px);
+      margin: auto;
+      padding: 44px 25px;
+
+      border: 1px solid rgba(200,156,67,.55);
+      border-radius: 34px 34px 12px 12px;
+
+      background: rgba(255,255,255,.78);
+
+      box-shadow: 0 15px 35px rgba(20,53,78,.12);
+    }
+
+    .cross {
+      color: var(--gold);
+      text-align: center;
+      font: 44px/1 Georgia, serif;
+    }
+
+    .kicker {
+      margin: 12px 0 0;
+      color: #a67c2d;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .17em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 7px 0 26px;
+      color: var(--navy);
+      font: 600 clamp(2.7rem,10vw,4.2rem)/.9 'Cormorant Garamond',serif;
+      text-align: center;
+    }
+
+    .summary {
+      padding: 18px;
+      border-radius: 14px;
+      color: white;
+      background: linear-gradient(135deg,#173654,#3c7397);
+      text-align: center;
+    }
+
+    .summary-label {
+      display: block;
+      color: #f1d481;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .summary-number {
+      display: block;
+      color: white;
+      font: 700 2.8rem/1.2 'Cormorant Garamond',serif;
+    }
+
+    .list {
+      display: grid;
+      gap: 13px;
+      margin-top: 23px;
+    }
+
+    .entry {
+      padding: 18px;
+      border-left: 3px solid var(--gold);
+      border-radius: 0 12px 12px 0;
+      background: #fffefa;
+      box-shadow: 0 4px 12px rgba(25,61,88,.06);
+      overflow-wrap: anywhere;
+    }
+
+    .entry h2 {
+      margin: 0 0 10px;
+      color: var(--navy);
+      font-size: 1rem;
+    }
+
+    .entry p {
+      margin: 7px 0;
+      font-size: .8rem;
+      line-height: 1.6;
+    }
+
+    .entry time {
+      display: block;
+      margin-top: 12px;
+      color: #74818c;
+      font-size: .69rem;
+    }
+
+    .status {
+      margin: 20px 0;
+      font-size: .8rem;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .loading,
+    .empty {
+      color: #62717e;
+    }
+
+    .error {
+      padding: 14px;
+      border-radius: 10px;
+      color: #a33e3e;
+      background: #fff1f1;
+      overflow-wrap: anywhere;
+      text-align: left;
+    }
+
+    .refresh {
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--navy);
+      color: white;
+      cursor: pointer;
+      font: 700 .68rem Montserrat,sans-serif;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      transition: background .2s;
+    }
+
+    .refresh:hover {
+      background: #2c648c;
+    }
+
+    .refresh:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 27px;
+      color: var(--navy);
+      font-size: .74rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .back:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 18px 12px;
+      }
+
+      main {
+        padding: 32px 18px;
+      }
+
+      .entry {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main>
+
+    <div class="cross">✝</div>
+
+    <p class="kicker">
+      Primera Comunión de Anthony Hernández Martínez
+    </p>
+
+    <h1>Confirmaciones</h1>
+
+    <section id="dashboard">
+
+      <div class="summary">
+
+        <span class="summary-label">
+          Total de respuestas registradas
+        </span>
+
+        <span id="total" class="summary-number">0</span>
+
+      </div>
+
+      <p id="loading" class="status loading">
+        Cargando confirmaciones...
+      </p>
+
+      <div id="list" class="list" aria-live="polite"></div>
+
+      <p id="empty" class="status empty" style="display:none">
+        Aún no hay confirmaciones registradas.
+      </p>
+
+      <div id="load-error" class="status error" style="display:none"></div>
+
+      <button id="refresh" class="refresh" type="button">
+        Actualizar confirmaciones
+      </button>
+
+    </section>
+
+    <a class="back" href="index.html">
+      ← Volver a la invitación
+    </a>
+
+  </main>
+
+  <script>
+
+    // =========================================
+    // CONFIGURACIÓN POCKETBASE
+    // =========================================
+
+    const PB_URL = 'https://base.pocketstiven.com';
+
+    const COLLECTION = 'communion_confirmations';
+
+    const EVENT_ID = 'primera-comunion-anthony-2026';
+
+    const PER_PAGE = 30;
+
+
+    // =========================================
+    // ELEMENTOS
+    // =========================================
+
+    const list = document.getElementById('list');
+
+    const total = document.getElementById('total');
+
+    const empty = document.getElementById('empty');
+
+    const loading = document.getElementById('loading');
+
+    const loadError = document.getElementById('load-error');
+
+    const refreshButton = document.getElementById('refresh');
+
+
+    // =========================================
+    // CREAR ELEMENTOS SEGUROS
+    // =========================================
+
+    function addText(parent, tag, text) {
+
+      const element = document.createElement(tag);
+
+      element.textContent = text;
+
+      parent.appendChild(element);
+
+      return element;
+
+    }
+
+
+    // =========================================
+    // FORMATEAR FECHA Y HORA
+    // =========================================
+
+    function formatDate(dateString) {
+
+      if (!dateString) {
+        return 'Fecha no disponible';
+      }
+
+      const date = new Date(dateString);
+
+      if (isNaN(date.getTime())) {
+        return 'Fecha no disponible';
+      }
+
+      return date.toLocaleString('es-CO', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'America/Bogota'
+      });
+
+    }
+
+
+    // =========================================
+    // CREAR TARJETA DE CONFIRMACIÓN
+    // =========================================
+
+    function createEntry(item) {
+
+      const entry = document.createElement('article');
+
+      entry.className = 'entry';
+
+
+      // Nombre del invitado
+
+      addText(
+        entry,
+        'h2',
+        item.guest_name || 'Invitado sin nombre'
+      );
+
+
+      // Respuesta de asistencia
+
+      let attendanceText = 'Sin respuesta';
+
+      if (item.attendance === 'yes') {
+        attendanceText = 'Sí, asistirá';
+      }
+
+      if (item.attendance === 'no') {
+        attendanceText = 'No podrá asistir';
+      }
+
+
+      addText(
+        entry,
+        'p',
+        `Respuesta: ${attendanceText}`
+      );
+
+
+      // Mensaje opcional
+
+      if (item.message && item.message.trim() !== '') {
+
+        addText(
+          entry,
+          'p',
+          `Mensaje: ${item.message}`
+        );
+
+      }
+
+
+      // Fecha y hora de registro
+
+      const dateText = formatDate(item.created);
+
+      addText(
+        entry,
+        'time',
+        `Registrado: ${dateText}`
+      );
+
+
+      return entry;
+
+    }
+
+
+    // =========================================
+    // OBTENER TODOS LOS REGISTROS
+    // =========================================
+
+    async function getAllRecords() {
+
+      let allRecords = [];
+
+      let page = 1;
+
+      let totalPages = 1;
+
+
+      do {
+
+        const params = new URLSearchParams();
+
+        params.set('page', page);
+
+        params.set('perPage', PER_PAGE);
+
+
+        const url =
+          `${PB_URL}/api/collections/${COLLECTION}/records?${params.toString()}`;
+
+
+        console.log('Consultando página:', page);
+
+        const response = await fetch(url);
+
+
+        if (!response.ok) {
+
+          const responseText = await response.text();
+
+          throw new Error(
+            `Error HTTP ${response.status}: ${responseText}`
+          );
+
+        }
+
+
+        const data = await response.json();
+
+
+        const records = data.items || [];
+
+        allRecords = allRecords.concat(records);
+
+
+        totalPages = data.totalPages || 1;
+
+        page++;
+
+
+      } while (page <= totalPages);
+
+
+      return allRecords;
+
+    }
+
+
+    // =========================================
+    // CARGAR CONFIRMACIONES
+    // =========================================
+
+    async function loadConfirmations() {
+
+      refreshButton.disabled = true;
+
+      loading.style.display = 'block';
+
+      empty.style.display = 'none';
+
+      loadError.style.display = 'none';
+
+      list.replaceChildren();
+
+      total.textContent = '...';
+
+
+      try {
+
+        console.log('================================');
+
+        console.log('Consultando PocketBase...');
+
+
+        // Obtener todos los registros.
+        // Se utiliza la consulta simple para evitar
+        // los errores HTTP 400 del filtro del servidor.
+
+        const allRecords = await getAllRecords();
+
+
+        console.log(
+          'Total de registros recibidos:',
+          allRecords.length
+        );
+
+
+        // Filtrar únicamente las confirmaciones
+        // correspondientes a este evento.
+
+        const items = allRecords.filter(item => {
+
+          return item.event === EVENT_ID;
+
+        });
+
+
+        // Ordenar del registro más reciente al más antiguo.
+
+        items.sort((a, b) => {
+
+          const dateA = new Date(a.created || 0).getTime();
+
+          const dateB = new Date(b.created || 0).getTime();
+
+          return dateB - dateA;
+
+        });
+
+
+        // Mostrar total de confirmaciones.
+
+        total.textContent = items.length;
+
+
+        console.log(
+          'Confirmaciones del evento:',
+          items.length
+        );
+
+
+        // Mostrar respuesta recibida para verificar
+        // que PocketBase esté enviando el campo created.
+
+        if (items.length > 0) {
+
+          console.log(
+            'Ejemplo de registro recibido:',
+            items[0]
+          );
+
+          console.log(
+            'Fecha de creación:',
+            items[0].created
+          );
+
+        }
+
+
+        // Si no existen confirmaciones.
+
+        if (items.length === 0) {
+
+          empty.style.display = 'block';
+
+          return;
+
+        }
+
+
+        // Crear las tarjetas de cada invitado.
+
+        items.forEach(item => {
+
+          const entry = createEntry(item);
+
+          list.appendChild(entry);
+
+        });
+
+
+        console.log('Carga completada correctamente.');
+
+        console.log('================================');
+
+
+      } catch (error) {
+
+        console.error(
+          'Error cargando confirmaciones:',
+          error
+        );
+
+
+        total.textContent = '—';
+
+
+        loadError.textContent =
+          'No pudimos cargar las confirmaciones: ' +
+          error.message;
+
+
+        loadError.style.display = 'block';
+
+
+      } finally {
+
+        loading.style.display = 'none';
+
+        refreshButton.disabled = false;
+
+      }
+
+    }
+
+
+    // =========================================
+    // BOTÓN ACTUALIZAR
+    // =========================================
+
+    refreshButton.addEventListener(
+      'click',
+      loadConfirmations
+    );
+
+
+    // =========================================
+    // INICIAR PÁGINA
+    // =========================================
+
+    loadConfirmations();
+
+  </script>
+
+</body>
+</html>
